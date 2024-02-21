@@ -1,0 +1,6 @@
+venv/
+.vagrant/
+.vscode/
+*tmp/
+backups/*
+
