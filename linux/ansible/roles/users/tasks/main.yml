@@ -1,9 +1,9 @@
 ---
-- name: Get human users
+
+- name: Get local users
   become: true
-  ansible.builtin.getent:
-    database: passwd
-  register: passwd
+  ansible.builtin.set_fact:
+    userlist: "{{ lookup('file', '/etc/passwd') | split('\n') | map('regex_replace', '(.*?):.*', '\\1') }}"
 
 - name: Get groups
   become: true
@@ -85,7 +85,7 @@
       ansible.builtin.include_tasks:
         file: tasks/change_passwords.yml
       when: "{{ item != ansible_user }}"
-      loop: "{{ passwd.ansible_facts.getent_passwd | dict2items | map(attribute='key') | list }}"
+      loop: "{{ userlist }}"
 
     - name: Generate password for {{ ansible_user }}
       ansible.builtin.set_fact:

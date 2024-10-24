@@ -25,6 +25,8 @@ mkShell {
   LC_ALL = "C.UTF-8";
   LANG = "C.UTF-8";
   ANSIBLE_HOST_KEY_CHECKING = "False";
+  # ANSIBLE_PYTHON_INTERPRETER = "${(pkgs.python312.withPackages my-python-packages)}/bin/python";
+  # PYTHONPATH = "${pkgs.python312.withPackages my-python-packages}/bin/python"; 
   VAGRANT_WSL_ENABLE_WINDOWS_ACCESS = "1";
   VAGRANT_DEFAULT_PROVIDER = "${vagrantDefaultProvider}";
   buildInputs = [
@@ -35,7 +37,7 @@ mkShell {
     openssh
     sshpass
     sshs
-    (pkgs.python311.withPackages my-python-packages)
+    (pkgs.python312.withPackages my-python-packages)
     ansible-lint
   ];
 }

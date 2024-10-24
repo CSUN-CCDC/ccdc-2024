@@ -1,4 +1,7 @@
-users_passwords_shuffle: false # boolean, if defined, will shuffle all passwords (including ansible_user) and download a CSV of the changes
+# boolean, if defined, will shuffle all passwords (including ansible_user) and download a CSV of the changes
+# Seems to not set passwords for accounts with /sbin/nologin or /bin/false as the shell.
+
+users_passwords_shuffle: false
 
 users_passwords_hash: 'sha512' # String, sets the password hashing algorithm to be used. Some older OS may not be compatible with a newer hasing algorithm.
 
