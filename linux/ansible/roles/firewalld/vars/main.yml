@@ -3,7 +3,7 @@ firewalld_lockdown: false # boolean, if enabled will drop all rulesets and only 
 firewalld_source_ips: [] # ip addresses from which to accept ANY connections.
 
 
-firewalld_open_ports: [] # List of port/protocol, in THAT EXACT FORMAT, to open. E.g: ['8081/tcp','72/udp']
+firewalld_open_ports: [] # List of ports to open
 
 # List of services to enable via firewalld.
 # See https://wiki.archlinux.org/title/Firewalld#Services for docs

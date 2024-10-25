@@ -2,6 +2,9 @@ iptables_lockdown: false # boolean, if enabled will drop all rulesets and only a
 
 iptables_source_ips: [] # List of ip addresses, from which to accept all connections.
 
+# Ports to open with iptables/nftables
+iptables_open_ports: []
+
 # Trying to use "all" or a catch all for the iptables modules fails. A protocol *must* be used.
 # Two seperate lists is a simple way to achieve this
 iptables_open_ports_tcp: [] # List of ports

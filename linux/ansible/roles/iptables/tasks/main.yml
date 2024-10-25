@@ -37,22 +37,26 @@
         jump: ACCEPT
       loop: "{{ iptables_source_ips }}"
 
-- name: Open tcp ports with iptables
+- name: Open ports with iptables
   become: true
-  when: iptables_open_ports_tcp | length > 0
-  ansible.builtin.iptables:
-    chain: INPUT
-    protocol: tcp
-    destination_port: "{{ item }}"
-    jump: ACCEPT
-  loop: "{{ iptables_open_ports_tcp }}"
+  when: iptables_open_ports | length > 0
+  block:
+    - name: Open tcp port
+      ansible.builtin.iptables:
+        chain: INPUT
+        protocol: tcp
+        destination_port: "{{ item }}"
+        jump: ACCEPT
+      loop: "{{ iptables_open_ports }}"
+    - name: Open udp port
+      ansible.builtin.iptables:
+        chain: INPUT
+        protocol: udp
+        destination_port: "{{ item }}"
+        jump: ACCEPT
+      loop: "{{ iptables_open_ports }}"
 
-- name: Open udp ports with iptables
-  become: true
-  when: iptables_open_ports_udp | length > 0
-  ansible.builtin.iptables:
-    chain: INPUT
-    protocol: udp
-    destination_port: "{{ item }}"
-    jump: ACCEPT
-  loop: "{{ iptables_open_ports_udp }}"
+- name: Alert user if docker is installed
+  when: docker_installed
+  ansible.builtin.debug:
+    msg: "Docker is installed! Docker bypasses the firewall!"

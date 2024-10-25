@@ -101,9 +101,15 @@
   when: firewalld_open_ports | length > 0 # Since firewalld_open_ports is a list, this checks if this list is non-empty
   become: true
   block:
-    - name: Firewalld open ports
+    - name: Firewalld open udp ports
       ansible.posix.firewalld:
-        port: "{{ item }}"
+        port: "{{ item }}/udp"
+        state: enabled
+        permanent: true
+      loop: "{{ firewalld_open_ports }}"
+    - name: Firewalld open tcp
+      ansible.posix.firewalld:
+        port: "{{ item }}/tcp"
         state: enabled
         permanent: true
       loop: "{{ firewalld_open_ports }}"
@@ -127,3 +133,7 @@
         name: firewalld
         state: restarted
 
+- name: Alert user if docker is installed
+  when: docker_installed
+  ansible.builtin.debug:
+    msg: "Docker is installed! Docker bypasses the firewall!"

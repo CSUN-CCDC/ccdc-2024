@@ -32,10 +32,18 @@
       become: true
       community.docker.docker_container:
         name: alpine_container
-        image: docker.io/alpine
+        image: docker.io/library/alpine
         state: started
         volumes:
           - test_volume:/bin
         command: tail -f /dev/null
         ports:
-          - "80:8000"
+          - "8080:8000"
+    - name: Run Caddy container
+      become: true
+      community.docker.docker_container:
+        name: caddy_container
+        image: docker.io/library/caddy:latest
+        state: started
+        ports:
+          - "80:80"
