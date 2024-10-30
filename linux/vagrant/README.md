@@ -34,5 +34,8 @@ Also, vagrant can snapshot machines depending on your setup.
 `vagrant snapshot list` lists snapshots. 
 
 
+To transfer files from the outside of the machine, into a vagrant machine over ssh:
 
+
+`cat file | vagrant ssh vmname --  "cat > remotefile"`
 
