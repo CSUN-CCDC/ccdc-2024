@@ -1,28 +1,28 @@
 ---
 
 
-- name: Download gitignore
-  when: domain_passwords_shuffle
-  block:
-    - name: Create passwords file
-      ansible.windows.win_tempfile:
-        suffix: "gitignore"
-        state: file
-      register: gitignore_file
-    - name: Add * to gitignore
-      community.windows.win_lineinfile:
-        path: "{{ gitignore_file.path }}"
-        line: "*"
-    - name: Fetch gitignore
-      ansible.builtin.fetch:
-        src: "{{ gitignore_file.path }}"
-        dest: "{{ playbook_dir }}/domain/.gitignore"
-        flat: true
-    - name: Delete gitignore
-      become: true
-      ansible.builtin.file:
-        path: /tmp/.gitignore
-        state: absent
+# - name: Download gitignore
+#   when: domain_passwords_shuffle
+#   block:
+#     - name: Create passwords file
+#       ansible.windows.win_tempfile:
+#         suffix: "gitignore"
+#         state: file
+#       register: gitignore_file
+#     - name: Add * to gitignore
+#       community.windows.win_lineinfile:
+#         path: "{{ gitignore_file.path }}"
+#         line: "*"
+#     - name: Fetch gitignore
+#       ansible.builtin.fetch:
+#         src: "{{ gitignore_file.path }}"
+#         dest: "{{ playbook_dir }}/domain/.gitignore"
+#         flat: true
+#     - name: Delete gitignore
+#       become: true
+#       ansible.builtin.file:
+#         path: /tmp/.gitignore
+#         state: absent
 
 - name: Shuffle windows passwords
   when: domain_passwords_shuffle
