@@ -24,14 +24,14 @@
         state: restarted
     - name: Install podman
       ansible.builtin.package:
-        name: podman
+        name: [podman, helm, btrfs-progs]
         state: present
     - name: Ensure the user is present
       ansible.builtin.user:
         name: podmaner
         #home: /home/podmaner
         shell: /bin/bash
-        #createhome: yes
+        #createhome: yes  
         password: "{{ 'podmaner' | password_hash('sha512') }}"
     - name: Loginctl enable linger podman_user
       ansible.builtin.command: "loginctl enable-linger podmaner"
