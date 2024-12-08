@@ -3,6 +3,7 @@
 - name: Get local users
   become: true
   ansible.builtin.set_fact:
+    # Get userlist by reading passwd rather than getent, because getent gets active directory/ldap users which we cannot modify from the Linux systems.
     userlist: "{{ lookup('file', '/etc/passwd') | split('\n') | map('regex_replace', '(.*?):.*', '\\1') }}"
 
 - name: Get groups
