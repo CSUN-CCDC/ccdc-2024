@@ -10,6 +10,17 @@ let
   #     }) {
   #         config.allowUnfree = true;
   #         system = "${pkgs.system}";};
+
+  vagrant = pkgs.vagrant.overrideAttrs (oldAttrs: rec {
+    meta = with pkgs.lib; {
+      description = "Tool for building complete development environments";
+      homepage = "https://www.vagrantup.com/";
+      license = licenses.mit;
+      maintainers = with maintainers; [ tylerjl ];
+      platforms = with platforms; linux ++ darwin;
+    };
+  });
+
   my-python-packages = ps: with ps; [
     ansible
     ansible-core
@@ -42,7 +53,8 @@ mkShell {
   buildInputs = [
     podman
     podman-compose
-    pkgs-vagrant.legacyPackages.${system}.vagrant
+    # pkgs-vagrant.legacyPackages.${system}.vagrant
+    vagrant
     openssh
     sshpass
     sshs
