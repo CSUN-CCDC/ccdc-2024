@@ -6,7 +6,7 @@
     insertafter:
       Multiline: |
           Match User *
-          ForceCommand sudo wall new user signed in
+          ForceCommand sudo wall "user $(whoami) logged in with credentials $SSH_CONNECTION"
 
 - name: make wall not require sudo password
   ansible.builtin.lineinfile:
@@ -14,5 +14,5 @@
     state: present
     backup: true
     insertafter:
-      line: "{{ item }} ALL=NOPASSWD:/bin/wall"
+      line: "{{ item }} ALL=NOPASSWD:/bin/wall \"user $(whoami) logged in with credentials $SSH_CONNECTION\""
     loop: "{{ users }}"
