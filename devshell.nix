@@ -12,6 +12,7 @@ let
   #         system = "${pkgs.system}";};
 
   vagrant = pkgs.vagrant.overrideAttrs (oldAttrs: rec {
+    buildRubyGem.doInstallCheck = false;
     meta = with pkgs.lib; {
       description = "Tool for building complete development environments";
       homepage = "https://www.vagrantup.com/";
