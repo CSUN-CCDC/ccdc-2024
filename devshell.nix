@@ -2,24 +2,8 @@
 
 let
 
-  # Vagrant 2.4.1 build that works (newer nix builds are broken), but is BSL rather than FOSS
-  #   pkgs-vagrant = import (fetchTarball {
-  #     url = "https://github.com/nixos/nixpkgs/archive/05bbf675397d5366259409139039af8077d695ce.tar.gz";
-  #     sha256 = "1r26vjqmzgphfnby5lkfihz6i3y70hq84bpkwd43qjjvgxkcyki0";
-  #
-  #     }) {
-  #         config.allowUnfree = true;
-  #         system = "${pkgs.system}";};
-
   vagrant = pkgs.vagrant.overrideAttrs (oldAttrs: rec {
-    buildRubyGem.doInstallCheck = false;
-    meta = with pkgs.lib; {
-      description = "Tool for building complete development environments";
-      homepage = "https://www.vagrantup.com/";
-      license = licenses.mit;
-      maintainers = with maintainers; [ tylerjl ];
-      platforms = with platforms; linux ++ darwin;
-    };
+    doInstallCheck = false;
   });
 
   my-python-packages = ps: with ps; [
