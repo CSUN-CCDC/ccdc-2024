@@ -1,115 +1,121 @@
+name: greenbone-community-edition
+
 services:
   vulnerability-tests:
-    image: docker.io/greenbone/vulnerability-tests
+    image: registry.community.greenbone.net/community/vulnerability-tests
     environment:
-      STORAGE_PATH: /var/lib/openvas/22.04/vt-data/nasl
+      FEED_RELEASE: "24.10"
     volumes:
       - vt_data_vol:/mnt
     cap_add:
-          - NET_RAW
-          - SYS_CHROOT
-          - AUDIT_WRITE
-          - MKNOD
+      - NET_RAW
+      - SYS_CHROOT
+      - AUDIT_WRITE
+      - MKNOD
 
   notus-data:
-    image: docker.io/greenbone/notus-data
+    image: registry.community.greenbone.net/community/notus-data
     volumes:
       - notus_data_vol:/mnt
     cap_add:
-          - NET_RAW
-          - SYS_CHROOT
-          - AUDIT_WRITE
-          - MKNOD
+      - NET_RAW
+      - SYS_CHROOT
+      - AUDIT_WRITE
+      - MKNOD
 
   scap-data:
-    image: docker.io/greenbone/scap-data
+    image: registry.community.greenbone.net/community/scap-data
     volumes:
       - scap_data_vol:/mnt
     cap_add:
-          - NET_RAW
-          - SYS_CHROOT
-          - AUDIT_WRITE
-          - MKNOD
+      - NET_RAW
+      - SYS_CHROOT
+      - AUDIT_WRITE
+      - MKNOD
 
   cert-bund-data:
-    image: docker.io/greenbone/cert-bund-data
+    image: registry.community.greenbone.net/community/cert-bund-data
     volumes:
       - cert_data_vol:/mnt
     cap_add:
-          - NET_RAW
-          - SYS_CHROOT
-          - AUDIT_WRITE
-          - MKNOD
+      - NET_RAW
+      - SYS_CHROOT
+      - AUDIT_WRITE
+      - MKNOD
 
   dfn-cert-data:
-    image: docker.io/greenbone/dfn-cert-data
+    image: registry.community.greenbone.net/community/dfn-cert-data
     volumes:
       - cert_data_vol:/mnt
     depends_on:
       - cert-bund-data
     cap_add:
-          - NET_RAW
-          - SYS_CHROOT
-          - AUDIT_WRITE
-          - MKNOD
+        - NET_RAW
+        - SYS_CHROOT
+        - AUDIT_WRITE
+        - MKNOD
 
   data-objects:
-    image: docker.io/greenbone/data-objects
+    image: registry.community.greenbone.net/community/data-objects
+    environment:
+      FEED_RELEASE: "24.10"
     volumes:
       - data_objects_vol:/mnt
     cap_add:
-          - NET_RAW
-          - SYS_CHROOT
-          - AUDIT_WRITE
-          - MKNOD
+      - NET_RAW
+      - SYS_CHROOT
+      - AUDIT_WRITE
+      - MKNOD
 
   report-formats:
-    image: docker.io/greenbone/report-formats
+    image: registry.community.greenbone.net/community/report-formats
+    environment:
+      FEED_RELEASE: "24.10"
     volumes:
       - data_objects_vol:/mnt
     depends_on:
       - data-objects
     cap_add:
-          - NET_RAW
-          - SYS_CHROOT
-          - AUDIT_WRITE
-          - MKNOD
+      - NET_RAW
+      - SYS_CHROOT
+      - AUDIT_WRITE
+      - MKNOD
 
   gpg-data:
-    image: docker.io/greenbone/gpg-data
+    image: registry.community.greenbone.net/community/gpg-data
     volumes:
       - gpg_data_vol:/mnt
     cap_add:
-          - NET_RAW
-          - SYS_CHROOT
-          - AUDIT_WRITE
-          - MKNOD
+      - NET_RAW
+      - SYS_CHROOT
+      - AUDIT_WRITE
+      - MKNOD
 
   redis-server:
-    image: docker.io/greenbone/redis-server
+    image: registry.community.greenbone.net/community/redis-server
     restart: on-failure
     volumes:
       - redis_socket_vol:/run/redis/
     cap_add:
-          - NET_RAW
-          - SYS_CHROOT
-          - AUDIT_WRITE
-          - MKNOD
+      - NET_RAW
+      - SYS_CHROOT
+      - AUDIT_WRITE
+      - MKNOD
 
   pg-gvm:
-    image: docker.io/greenbone/pg-gvm:stable
+    image: registry.community.greenbone.net/community/pg-gvm:stable
     restart: on-failure
     volumes:
       - psql_data_vol:/var/lib/postgresql
       - psql_socket_vol:/var/run/postgresql
     cap_add:
-          - NET_RAW
-          - SYS_CHROOT
-          - AUDIT_WRITE
-          - MKNOD
+      - NET_RAW
+      - SYS_CHROOT
+      - AUDIT_WRITE
+      - MKNOD
 
   gvmd:
-    image: docker.io/greenbone/gvmd:stable
+    image: registry.community.greenbone.net/community/gvmd:stable
     restart: on-failure
     volumes:
       - gvmd_data_vol:/var/lib/gvm
@@ -121,11 +127,6 @@ services:
       - gvmd_socket_vol:/run/gvmd
       - ospd_openvas_socket_vol:/run/ospd
       - psql_socket_vol:/var/run/postgresql
-    cap_add:
-        - NET_RAW
-        - SYS_CHROOT
-        - AUDIT_WRITE
-        - MKNOD
     depends_on:
       pg-gvm:
         condition: service_started
@@ -139,25 +140,108 @@ services:
         condition: service_completed_successfully
       report-formats:
         condition: service_completed_successfully
-    
+    cap_add:
+      - NET_RAW
+      - SYS_CHROOT
+      - AUDIT_WRITE
+      - MKNOD
 
   gsa:
-    image: docker.io/greenbone/gsa:stable
+    image: registry.community.greenbone.net/community/gsa:stable
     restart: on-failure
     ports:
-      - 0.0.0.0:9392:80
+      - 127.0.0.1:9392:80
     volumes:
       - gvmd_socket_vol:/run/gvmd
     depends_on:
       - gvmd
     cap_add:
-        - NET_RAW
-        - SYS_CHROOT
-        - AUDIT_WRITE
-        - MKNOD
+      - NET_RAW
+      - SYS_CHROOT
+      - AUDIT_WRITE
+      - MKNOD
+  # Sets log level of openvas to the set LOG_LEVEL within the env
+  # and changes log output to /var/log/openvas instead /var/log/gvm
+  # to reduce likelyhood of unwanted log interferences
+  configure-openvas:
+    image: registry.community.greenbone.net/community/openvas-scanner:stable
+    volumes:
+      - openvas_data_vol:/mnt
+      - openvas_log_data_vol:/var/log/openvas
+    command:
+      - /bin/sh
+      - -c
+      - |
+        printf "table_driven_lsc = yes\nopenvasd_server = http://openvasd:80\n" > /mnt/openvas.conf
+        sed "s/127/128/" /etc/openvas/openvas_log.conf | sed 's/gvm/openvas/' > /mnt/openvas_log.conf
+        chmod 644 /mnt/openvas.conf
+        chmod 644 /mnt/openvas_log.conf
+        touch /var/log/openvas/openvas.log
+        chmod 666 /var/log/openvas/openvas.log
+    cap_add:
+      - NET_RAW
+      - SYS_CHROOT
+      - AUDIT_WRITE
+      - MKNOD
+
+  # shows logs of openvas
+  openvas:
+    image: registry.community.greenbone.net/community/openvas-scanner:stable
+    restart: on-failure
+    volumes:
+      - openvas_data_vol:/etc/openvas
+      - openvas_log_data_vol:/var/log/openvas
+    command:
+      - /bin/sh
+      - -c
+      - |
+        cat /etc/openvas/openvas.conf
+        tail -f /var/log/openvas/openvas.log
+    depends_on:
+      configure-openvas:
+        condition: service_completed_successfully
+    cap_add:
+      - NET_RAW
+      - SYS_CHROOT
+      - AUDIT_WRITE
+      - MKNOD
+
+  openvasd:
+    image: registry.community.greenbone.net/community/openvas-scanner:stable
+    restart: on-failure
+    environment:
+      # `service_notus` is set to disable everything but notus,
+      # if you want to utilize openvasd directly removed `OPENVASD_MODE`
+      OPENVASD_MODE: service_notus
+      GNUPGHOME: /etc/openvas/gnupg
+      LISTENING: 0.0.0.0:80
+    volumes:
+      - openvas_data_vol:/etc/openvas
+      - openvas_log_data_vol:/var/log/openvas
+      - gpg_data_vol:/etc/openvas/gnupg
+      - notus_data_vol:/var/lib/notus
+    # enable port forwarding when you want to use the http api from your host machine
+    # ports:
+    #   - 127.0.0.1:3000:80
+    depends_on:
+      vulnerability-tests:
+        condition: service_completed_successfully
+      configure-openvas:
+        condition: service_completed_successfully
+      gpg-data:
+        condition: service_completed_successfully
+    networks:
+      default:
+        aliases:
+          - openvasd
+    cap_add:
+      - NET_RAW
+      - SYS_CHROOT
+      - AUDIT_WRITE
+      - MKNOD
 
   ospd-openvas:
-    image: docker.io/greenbone/ospd-openvas:stable
+    image: registry.community.greenbone.net/community/ospd-openvas:stable
     restart: on-failure
     hostname: ospd-openvas.local
     cap_add:
@@ -175,12 +259,10 @@ services:
         "-f",
         "--config",
         "/etc/gvm/ospd-openvas.conf",
-        "--mqtt-broker-address",
-        "mqtt-broker",
         "--notus-feed-dir",
         "/var/lib/notus/advisories",
         "-m",
-        "666"
+        "666",
       ]
     volumes:
       - gpg_data_vol:/etc/openvas/gnupg
@@ -188,6 +270,8 @@ services:
       - notus_data_vol:/var/lib/notus
       - ospd_openvas_socket_vol:/run/ospd
       - redis_socket_vol:/run/redis/
+      - openvas_data_vol:/etc/openvas/
+      - openvas_log_data_vol:/var/log/openvas
     depends_on:
       redis-server:
         condition: service_started
@@ -195,53 +279,22 @@ services:
         condition: service_completed_successfully
       vulnerability-tests:
         condition: service_completed_successfully
-
-  mqtt-broker:
-    restart: on-failure
-    image: docker.io/greenbone/mqtt-broker
-    networks:
-      default:
-        aliases:
-          - mqtt-broker
-          - broker
-    cap_add:
-        - NET_RAW
-        - SYS_CHROOT
-        - AUDIT_WRITE
-        - MKNOD
-
-  notus-scanner:
-    restart: on-failure
-    image: docker.io/greenbone/notus-scanner:stable
-    volumes:
-      - notus_data_vol:/var/lib/notus
-      - gpg_data_vol:/etc/openvas/gnupg
-    environment:
-      NOTUS_SCANNER_MQTT_BROKER_ADDRESS: mqtt-broker
-      NOTUS_SCANNER_PRODUCTS_DIRECTORY: /var/lib/notus/products
-    cap_add:
-        - NET_RAW
-        - SYS_CHROOT
-        - AUDIT_WRITE
-        - MKNOD
-    depends_on:
-      - mqtt-broker
-      - gpg-data
-      - vulnerability-tests
+      configure-openvas:
+        condition: service_completed_successfully
 
   gvm-tools:
-    image: docker.io/greenbone/gvm-tools
+    image: registry.community.greenbone.net/community/gvm-tools
     volumes:
       - gvmd_socket_vol:/run/gvmd
       - ospd_openvas_socket_vol:/run/ospd
-    cap_add:
-        - NET_RAW
-        - SYS_CHROOT
-        - AUDIT_WRITE
-        - MKNOD
     depends_on:
       - gvmd
       - ospd-openvas
+    cap_add:
+      - NET_RAW
+      - SYS_CHROOT
+      - AUDIT_WRITE
+      - MKNOD
 
 volumes:
   gpg_data_vol:
@@ -256,3 +309,5 @@ volumes:
   gvmd_socket_vol:
   ospd_openvas_socket_vol:
   redis_socket_vol:
+  openvas_data_vol:
+  openvas_log_data_vol:
