@@ -29,7 +29,7 @@
       value: "no"
     - parameter: PasswordAuthentication
       value: "yes"
-      #Logan's edits
+      # Logan's edits
     - parameter: MaxAuthTries
       value: "3"
     - paramter: ClientAliveInterval
